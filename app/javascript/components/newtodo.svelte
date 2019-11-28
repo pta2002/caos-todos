@@ -28,6 +28,20 @@
 </style>
 
 <div class="contain">
-    <input type="text">
-    <button>Add</button>
+    <input type="text" on:keypress={addTask} bind:value={text} placeholder="Add a task">
+    <!-- wtf? -->
+    <button on:click={addTask}>Add</button>
 </div>
+
+<script>
+    import { createEventDispatcher } from 'svelte'
+
+    const dispatch = createEventDispatcher()
+    let text = "";
+
+    function addTask(e) {
+        if ((e.type === "keypress" && e.code === "Enter") || e.type == "click") {
+            dispatch('addtask', {text: text})
+        }
+    }
+</script>

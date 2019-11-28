@@ -1,5 +1,8 @@
 <script>
-    export let task;
+    import { createEventDispatcher } from 'svelte'
+
+    const dispatch = createEventDispatcher()
+    export let task
 </script>
 
 <style>
@@ -46,14 +49,17 @@
     }
 </style>
 
-<div class="task" id="12312">
-    <p class:finished={task.finished} class="bg-white">{task.text}</p>
+<div class="task">
+    <p class:finished={task.done} class="bg-white">{task.text}</p>
     <div class="buttons">
-        <div class="erase">Erase</div>
-        {#if task.finished}
-            <div class="active">Active</div>
+        {#await task.promise}
+        <p>Loading...</p>
+        {/await}
+        <div class="erase" on:click={e => dispatch('delete')}>Erase</div>
+        {#if task.done}
+            <div class="active" on:click={e => dispatch('activate')}>Active</div>
         {:else}
-            <div class="done">Done</div>
+            <div class="done" on:click={e => dispatch('done')}>Done</div>
         {/if}
     </div>
 </div>

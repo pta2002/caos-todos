@@ -1,23 +1,49 @@
 <script>
-import Todo from 'components/todo.svelte';
-import NewTodo from 'components/newtodo.svelte';
-  let todos = [
-    "Hello"
-  ]
-  let activeTodos = [
-    { text: "Active #1", finished: false },
-    { text: "Active #2", finished: false },
-    { text: "Active #3", finished: false },
-    { text: "Active #4", finished: false },
-  ];
-  let finishedTodos = [
-    { text: "Task #1", finished: true },
-    { text: "Task #2", finished: true },
-    { text: "Task #3", finished: true },
-    { text: "Task #4", finished: true },
-    { text: "Task #5", finished: true },
-    { text: "Task #6", finished: true },
-  ];
+// TODO: Add fetch from /todos.json
+  import Todo from 'components/todo.svelte';
+  import NewTodo from 'components/newtodo.svelte';
+  import LoadingCard from 'components/loadingcard.svelte';
+
+  let todos = []
+  $: activeTodos = todos.filter(t => !t.done)
+  $: finishedTodos = todos.filter(t => t.done)
+
+  let tasks = fetch('/todos.json').then(json).then(processTasks)
+
+  function json(r) { return r.json() }
+
+  function processTasks(data) {
+    let i = 0;
+    for (const task of data) {
+      task.i = i++;
+      todos.push(task)
+    }
+    todos = todos
+  }
+
+  function addTask(e) {
+    // TODO ruby stuff
+  }
+
+  function taskDone(task) {
+    let p = fetch(`/todos/${task.id}/finish`, { method: 'POST' })
+
+    task.promise = p
+    task.done = true
+    todos = todos
+  }
+
+  function taskActivated(task) {
+    let p = fetch(`/todos/${task.id}/activate`, { method: 'POST' })
+
+    task.promise = p
+    task.done = false
+    todos = todos
+  }
+
+  function taskDeleted(task) {
+    alert(`Delete: ${task.id}`)
+  }
 </script>
 
 <style>
@@ -38,27 +64,31 @@ h1 {
 <div class="card">
   <h1>Todos</h1>
   <hr>
-  <NewTodo/>
+  <NewTodo on:addtask={addTask}/>
   <hr>
-  <h2>Active</h2>
-  <div>
-    {#if activeTodos.length > 0}
-      {#each activeTodos as task}
-        <Todo {task}/>
-      {/each}
-    {:else}
-      There are no active tasks
-    {/if}
-  </div>
-  <hr>
-  <h2>Done</h2>
-  <div>
-    {#if finishedTodos.length > 0}
-      {#each finishedTodos as task}
-        <Todo {task}/>
-      {/each}
-    {:else}
-      There are no finished tasks
-    {/if}
-  </div>
+    {#await tasks}
+      <LoadingCard/>
+    {:then}
+      <h2>Active</h2>
+      <div>
+        {#if activeTodos.length > 0}
+          {#each activeTodos as task (task.id)}
+            <Todo {task} on:delete={taskDeleted(task)} on:done={taskDone(task)}/>
+          {/each}
+        {:else}
+          There are no active tasks
+        {/if}
+      </div>
+      <hr>
+      <h2>Done</h2>
+      <div>
+        {#if finishedTodos.length > 0}
+          {#each finishedTodos as task (task.id)}
+            <Todo {task} on:delete={taskDeleted(task)} on:activate={taskActivated(task)}/>
+          {/each}
+        {:else}
+          There are no finished tasks
+        {/if}
+      </div>
+    {/await}
 </div>
