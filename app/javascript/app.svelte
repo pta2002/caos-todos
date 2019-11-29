@@ -47,7 +47,6 @@
     todos = todos
   }
 
-  // This keeps telling me the function is undefined whenever I run it, and I have absolutely no idea why!
   function deleteTask(task) {
     task.promise = fetch(`/todos/${task.id}`, { method: 'DELETE' })
       .then(r => {
@@ -88,7 +87,7 @@ h1 {
       <div>
         {#if activeTodos.length > 0}
           {#each activeTodos as task (task.i)}
-            <Todo {task} on:erase={deleteTask(task)} on:done={taskDone(task)}/>
+            <Todo {task} on:erase={e => deleteTask(task)} on:done={e => taskDone(task)}/>
           {/each}
         {:else}
           There are no active tasks
@@ -99,7 +98,7 @@ h1 {
       <div>
         {#if finishedTodos.length > 0}
           {#each finishedTodos as task (task.i)}
-            <Todo {task} on:erase={deleteTask(task)} on:activate={taskActivated(task)}/>
+            <Todo {task} on:erase={e => deleteTask(task)} on:activate={e => taskActivated(task)}/>
           {/each}
         {:else}
           There are no finished tasks
