@@ -25,4 +25,11 @@ class TodosController < ApplicationController
 
     render json: @task
   end
+
+  def destroy
+    @task = Task.find(params[:id])
+    @task.destroy
+
+    render json: { success: true }
+  end
 end

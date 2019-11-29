@@ -13,12 +13,13 @@
   function json(r) { return r.json() }
 
   function processTasks(data) {
+    let t = []
     let i = 0;
     for (const task of data) {
       task.i = i++;
-      todos.push(task)
+      t.push(task)
     }
-    todos = todos
+    todos = t
   }
 
   function addTask(e) {
@@ -26,23 +27,37 @@
   }
 
   function taskDone(task) {
-    let p = fetch(`/todos/${task.id}/finish`, { method: 'POST' })
-
-    task.promise = p
+    task.promise = fetch(`/todos/${task.id}/finish`, { method: 'POST' }).catch(reset)
+    task.prev = { done: task.done }
     task.done = true
     todos = todos
   }
 
-  function taskActivated(task) {
-    let p = fetch(`/todos/${task.id}/activate`, { method: 'POST' })
+  function reset() {
+    for (key in task.prev)
+      task[key] = task.prev[key]
 
-    task.promise = p
+    task.prev = undefined
+  }
+
+  function taskActivated(task) {
+    task.promise = fetch(`/todos/${task.id}/activate`, { method: 'POST' }).catch(reset)
+    task.prev = { done: task.done }
     task.done = false
     todos = todos
   }
 
-  function taskDeleted(task) {
-    alert(`Delete: ${task.id}`)
+  // This keeps telling me the function is undefined whenever I run it, and I have absolutely no idea why!
+  function deleteTask(task) {
+    task.promise = fetch(`/todos/${task.id}`, { method: 'DELETE' })
+      .then(r => {
+        if (r.status == 200) {
+          todos.splice(task.i, 1)
+          processTasks(todos)
+        }
+      })
+    
+    task.deleting = true
   }
 </script>
 
@@ -72,8 +87,8 @@ h1 {
       <h2>Active</h2>
       <div>
         {#if activeTodos.length > 0}
-          {#each activeTodos as task (task.id)}
-            <Todo {task} on:delete={taskDeleted(task)} on:done={taskDone(task)}/>
+          {#each activeTodos as task (task.i)}
+            <Todo {task} on:erase={deleteTask(task)} on:done={taskDone(task)}/>
           {/each}
         {:else}
           There are no active tasks
@@ -83,8 +98,8 @@ h1 {
       <h2>Done</h2>
       <div>
         {#if finishedTodos.length > 0}
-          {#each finishedTodos as task (task.id)}
-            <Todo {task} on:delete={taskDeleted(task)} on:activate={taskActivated(task)}/>
+          {#each finishedTodos as task (task.i)}
+            <Todo {task} on:erase={deleteTask(task)} on:activate={taskActivated(task)}/>
           {/each}
         {:else}
           There are no finished tasks

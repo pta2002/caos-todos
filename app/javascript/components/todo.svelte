@@ -47,17 +47,21 @@
     p {
         margin: 0;
     }
+
+    .deleting {
+        color: #a1372f;
+    }
 </style>
 
 <div class="task">
     <p class:finished={task.done} class="bg-white">{task.text}</p>
     <div class="buttons">
         {#await task.promise}
-        <p>Loading...</p>
+            <p class:deleting={task.deleting}>Loading...</p>
         {/await}
-        <div class="erase" on:click={e => dispatch('delete')}>Erase</div>
+        <div class="erase" on:click={e => dispatch('erase')}>Delete</div>
         {#if task.done}
-            <div class="active" on:click={e => dispatch('activate')}>Active</div>
+            <div class="active" on:click={e => dispatch('activate')}>Activate</div>
         {:else}
             <div class="done" on:click={e => dispatch('done')}>Done</div>
         {/if}

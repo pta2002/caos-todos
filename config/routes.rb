@@ -4,5 +4,5 @@ Rails.application.routes.draw do
   get '/todos', to: 'todos#index'
   post '/todos/:id/finish', to: 'todos#finish'
   post '/todos/:id/activate', to: 'todos#activate'
-  post '/todos/:id/delete', to: 'todos#delete'
+  delete '/todos/:id', to: 'todos#destroy'
 end
