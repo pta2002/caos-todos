@@ -32,7 +32,7 @@ input {
     border: #43c9a3 1px solid;
 }
 
-.authform {
+.new_user {
     // display: grid;
     // grid-template-columns: 2fr 8fr;
     // row-gap: .5rem;
@@ -52,6 +52,6 @@ input {
     }
 }
 
-.field_with_errors {
-    border: 1px solid red;
+.field_with_errors > * {
+    border-color: red;
 }

@@ -2,13 +2,7 @@
     <h1>Register</h1>
     <hr>
 
-    <% if @user.errors.any? %>
-        <h2 class="errorexplanation">There were <%= pluralize(@user.errors.count, "error") %></h2>
-    <% end %>
-
-    <%= @user.errors.any? %>
-
-    <%= form_with url: create_user_path, method: 'post', model: @user, class: 'authform' do %>
+    <%= form_for @user do %>
         <%= email_field :user, :email, placeholder: "Email" %>
         <%= password_field :user, :password, placeholder: "Password" %>
         <%= password_field :user, :password_confirmation, placeholder: "Confirm password" %>
