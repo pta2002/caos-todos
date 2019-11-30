@@ -10,6 +10,16 @@ class TodosController < ApplicationController
     end
   end
 
+  def create
+    @task = Task.new(params.permit(:text))
+
+    if @task.save then
+      render json: @task
+    else
+      render json: @task, status: 400
+    end
+  end
+
   def finish
     @task = Task.find(params[:id])
     @task.done = true

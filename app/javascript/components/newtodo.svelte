@@ -18,6 +18,11 @@
         width: 4rem;
     }
 
+    button[disabled] {
+        cursor: default;
+        background-color: #8eddc7;
+    }
+
     .contain {
         display: flex;
     }
@@ -30,7 +35,7 @@
 <div class="contain">
     <input type="text" on:keypress={addTask} bind:value={text} placeholder="Add a task">
     <!-- wtf? -->
-    <button on:click={addTask}>Add</button>
+    <button on:click={addTask} disabled={text.trim() == ""}>Add</button>
 </div>
 
 <script>
@@ -40,8 +45,9 @@
     let text = "";
 
     function addTask(e) {
-        if ((e.type === "keypress" && e.code === "Enter") || e.type == "click") {
+        if (((e.type === "keypress" && e.code === "Enter") || e.type == "click") && text.trim() != "") {
             dispatch('addtask', {text: text})
+            text = "";
         }
     }
 </script>

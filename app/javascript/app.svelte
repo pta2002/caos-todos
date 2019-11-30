@@ -23,7 +23,36 @@
   }
 
   function addTask(e) {
-    // TODO ruby stuff
+    let text = e.detail.text
+
+    let task = {
+      text: text,
+      done: false,
+      i: todos.length
+    }
+
+    task.promise = fetch('/todos/', {
+      method: 'PUT',
+      body: JSON.stringify(task),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(r => {
+      if (r.status == 200) {
+        return r.json()
+      } else {
+        console.log(r)
+        throw r.status
+      }
+    }).then(json => {
+      for (const key in json) {
+        task[key] = json[key]
+      }
+    }).catch(e => {
+      console.log(e)
+      todos.splice(task.i, 1)
+      processTasks(todos)
+    })
+
+    todos = [...todos, task]
   }
 
   function taskDone(task) {
