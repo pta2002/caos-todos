@@ -1,0 +1,10 @@
+<div class="card form">
+    <h1>Login</h1>
+    <hr>
+
+    <%= form_for :login, url: login_path, class: "new_login" do %>
+        <%= email_field :user, :email, placeholder: "Email" %>
+        <%= password_field :user, :password, placeholder: "Password" %>
+        <%= submit_tag "Login", class: "greenbtn" %>
+    <% end %>
+</div>

@@ -1,7 +1,13 @@
 Rails.application.routes.draw do
-  resources :users
-  get 'auth/register', to: 'users#new', as: 'register'
-  post 'auth/register', to: 'users#create', as: 'create_user'
+  root 'sessions#new'
+
+  get '/register', to: 'users#new'
+  post '/register', to: 'users#create'
+
+  get '/login', to: 'sessions#new'
+  post '/login', to: 'sessions#create'
+
+  get '/logout', to: 'sessions#destroy'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   get '/todos', to: 'todos#index'
