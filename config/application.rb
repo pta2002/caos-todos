@@ -16,5 +16,6 @@ module Todos
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
     config.hosts << "a8a7e972.ngrok.io"
+    config.hosts << "todos-caos.herokuapp.com"
   end
 end
