@@ -89,21 +89,6 @@
   }
 </script>
 
-<style>
-.card {
-  background-color: #fff;
-  padding: 1rem;
-  margin: 0 auto;
-  min-width: 20rem;
-  border-radius: .4rem;
-  width: 50vw;
-}
-
-h1 {
-  margin: 0;
-}
-</style>
-
 <div class="card">
   <h1>Todos</h1>
   <hr>
