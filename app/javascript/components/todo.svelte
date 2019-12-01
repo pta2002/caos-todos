@@ -9,6 +9,7 @@
     .task {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin: .4rem 0;
     }
 
