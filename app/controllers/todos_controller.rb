@@ -3,7 +3,7 @@ class TodosController < ApplicationController
   before_action :require_login
 
   def index
-    @tasks = Task.all
+    @tasks = current_user.tasks
 
     respond_to do |format| 
       format.html
@@ -12,7 +12,8 @@ class TodosController < ApplicationController
   end
 
   def create
-    @task = Task.new(params.permit(:text))
+    @task = Task.new(params.require(:todo).permit(:text))
+    @task.user = current_user
 
     if @task.save then
       render json: @task
@@ -22,7 +23,7 @@ class TodosController < ApplicationController
   end
 
   def finish
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
     @task.done = true
     @task.save
 
@@ -30,7 +31,7 @@ class TodosController < ApplicationController
   end
 
   def activate
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
     @task.done = false
     @task.save
 
@@ -38,7 +39,7 @@ class TodosController < ApplicationController
   end
 
   def destroy
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
     @task.destroy
 
     render json: { success: true }

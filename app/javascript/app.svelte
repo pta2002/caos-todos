@@ -33,7 +33,7 @@
 
     task.promise = fetch('/todos/', {
       method: 'PUT',
-      body: JSON.stringify(task),
+      body: JSON.stringify({ text: task.text }),
       headers: { 'Content-Type': 'application/json' }
     }).then(r => {
       if (r.status == 200) {
